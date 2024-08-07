@@ -1,6 +1,7 @@
 import tensorflow as tf
 from pathlib import Path
 import mlflow
+import dagshub
 import mlflow.keras
 from urllib.parse import urlparse
 from cnnClassifier.entity.config_entity import EvaluationConfig
@@ -54,8 +55,12 @@ class Evaluation:
 
     
     def log_into_mlflow(self):
+        dagshub.init(repo_owner='MaheshReddy2021', repo_name='Chest-Cancer-Classification--MLFLOW-DVC', mlflow=True)
         mlflow.set_registry_uri(self.config.mlflow_uri)
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+        # Set the experiment name (create it if it doesn't exist)
+        experiment_name = "Chest Cancer Classification"
+        mlflow.set_experiment(experiment_name)
         
         with mlflow.start_run():
             mlflow.log_params(self.config.all_params)
